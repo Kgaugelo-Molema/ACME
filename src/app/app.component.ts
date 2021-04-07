@@ -15,7 +15,8 @@ export class AppComponent implements OnInit {
     { field: 'account_number', sortable: true, filter: true },
     { field: 'account_type', sortable: true, filter: true },
     { field: 'balance', sortable: true, filter: true },
-    { field: 'withdraw', sortable: true, filter: true, checkboxSelection: true },
+    { field: 'amount', sortable: true, filter: true, editable: true },
+    { field: 'status', sortable: true, filter: true, editable: true }
   ];
 
   rowData: any[];
@@ -38,16 +39,49 @@ export class AppComponent implements OnInit {
   getSelectedRows() {
     const selectedNodes = this.agGrid.api.getSelectedNodes();
     const selectedData = selectedNodes.map(node => node.data );
-    let error = '';
-    selectedData.forEach(node => {
-      if (node.account_type == 'savings' && node.balance <= 0)
-        error += `\nAccount Number ${node.account_number} is overdrawn!`;
-      if (node.account_type == 'cheque' && node.balance < 500)
-        error += `\nAccount Number ${node.account_number} has reached the maximum over draft limit!`;
+    let messages = 'Message Log\n';
+    this.agGrid.api.forEachNode(node => {
+      let status = '';
+      const amount = Number(node.data.amount);
+      if (amount == NaN || node.data.amount == undefined || node.data.amount == '') {
+        node.setDataValue('status', 'Invalid Amount!');
+      }
+      else {
+        const balance = node.data.balance - amount;
+        if (node.data.account_type == 'savings' && balance <= 0)
+          messages += `\nAccount Number ${node.data.account_number} is overdrawn!`
+        else if (node.data.account_type == 'cheque' && balance < 500)
+          messages += `\nAccount Number ${node.data.account_number} has reached the maximum over draft limit!`
+        else 
+          status = 'Success';
+        node.setDataValue('status', status);  
+        node.setDataValue('balance', balance.toFixed(2));  
+      }       
     });
-    const selectedDataStringPresentation = selectedData.map(node => `${node.account_number} ${node.account_type} ${node.balance}`).join(', ');
+    if (messages != 'Message Log\n')
+      alert(messages); 
+}
 
-    alert(`Errors: ${error}`);
+  sizeToFit() {
+    this.agGrid.api.sizeColumnsToFit();
+  }
+
+  autoSizeAll(skipHeader) {
+    const cols = this.agGrid.columnApi.getAllColumns().forEach(column => {
+      this.agGrid.columnApi.autoSizeColumn(column.getColId());
+      if (column.getColId() == 'status') 
+        column.setActualWidth(200);
+    });
+    return;
+
+    let json = JSON.stringify(cols);
+    alert(`${json}`);
+
+    this.agGrid.columnApi.getAllColumns().forEach(function (column) {
+      json = JSON.stringify(column);
+      alert(`${json}`);
+      //this.agGrid.columnApi.autoSizeColumn(column);
+    });
   }
 
   doRowSelect() {
