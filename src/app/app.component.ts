@@ -53,7 +53,7 @@ export class AppComponent implements OnInit {
           status = 'Declined';
           messages += `\nAccount Number ${node.data.account_number} is overdrawn!`
         }
-        else if (node.data.account_type == 'cheque' && balance < 500) {
+        else if (node.data.account_type == 'cheque' && balance < -500) {
           status = 'Declined';
           messages += `\nAccount Number ${node.data.account_number} has reached the maximum over draft limit!`
         }
@@ -65,6 +65,7 @@ export class AppComponent implements OnInit {
     });
     if (messages != 'Message Log\n')
       alert(messages); 
+    this.getTotal();
 }
 
   sizeToFit() {
@@ -80,12 +81,10 @@ export class AppComponent implements OnInit {
   }
 
   getTotal() {
-    alert('getTotal()');
     const self = this;
     this.total = 0;
     this.agGrid.api.forEachNode(node => {
-      self.total += node.data.balance;
-      alert(`Balance: ${node.data.balance}\nTotal: ${self.total}`)
+      self.total += parseFloat(node.data.balance);
     });
   }
 
