@@ -20,10 +20,7 @@ export class AppComponent implements OnInit {
   ];
 
   rowData: any[];
-
-  gridOptions = {
-    onRowSelected: this.doRowSelect()
-  }
+  total = 0;
 
   constructor(private http: HttpClient) {
   }
@@ -33,6 +30,10 @@ export class AppComponent implements OnInit {
     let service = this.http.get('http://localhost:8080/api/accounts');
     service.subscribe(data => {
       self.rowData = data as any[];
+      const json = JSON.stringify(data);
+      self.rowData.forEach(record => {
+        self.total += parseFloat(record.balance);
+      });
     });
   }
 
@@ -76,20 +77,16 @@ export class AppComponent implements OnInit {
       if (column.getColId() == 'status') 
         column.setActualWidth(200);
     });
-    return;
-
-    let json = JSON.stringify(cols);
-    alert(`${json}`);
-
-    this.agGrid.columnApi.getAllColumns().forEach(function (column) {
-      json = JSON.stringify(column);
-      alert(`${json}`);
-      //this.agGrid.columnApi.autoSizeColumn(column);
-    });
   }
 
-  doRowSelect() {
-    //alert('Row select');
+  getTotal() {
+    alert('getTotal()');
+    const self = this;
+    this.total = 0;
+    this.agGrid.api.forEachNode(node => {
+      self.total += node.data.balance;
+      alert(`Balance: ${node.data.balance}\nTotal: ${self.total}`)
+    });
   }
 
 }

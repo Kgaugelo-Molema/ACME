@@ -289,6 +289,11 @@
     font-weight: bold;
     color: maroon;
   }
+
+  h2, h3 {
+    color: purple;
+  }
+
 </style>
 
 <!-- Toolbar -->
@@ -324,6 +329,7 @@
 
 <div class="content" role="main">
 
+  <h2>Account List</h2>
   <div class="row">
     <button class="btn btn-secondary"(click)="sizeToFit()">Size to Fit</button>&nbsp;
     <button class="btn btn-secondary"(click)="autoSizeAll(false)">Auto-Size All</button>
@@ -339,7 +345,13 @@
     [gridOptions]="gridOptions"
   >
   </ag-grid-angular>
-  <button class="btn btn-primary" (click)="getSelectedRows()">Withdraw</button>
-
+  <div style=width:100%>
+    <div class="float-left">
+      <h3>Balance {{total}}</h3>
+    </div>
+    <div class="float-right">
+      <button class="btn btn-primary" (click)="getSelectedRows()">Withdraw</button>
+    </div>
+  </div>
 </div>
 
