@@ -284,6 +284,11 @@
       visibility: hidden;
     }
   }
+
+  p {
+    font-weight: bold;
+    color: maroon;
+  }
 </style>
 
 <!-- Toolbar -->
@@ -319,10 +324,11 @@
 
 <div class="content" role="main">
 
-  <div class="button-bar">
-    <button (click)="sizeToFit()">Size to Fit</button>
-    <button (click)="autoSizeAll(false)">Auto-Size All</button>
+  <div class="row">
+    <button class="btn btn-secondary"(click)="sizeToFit()">Size to Fit</button>&nbsp;
+    <button class="btn btn-secondary"(click)="autoSizeAll(false)">Auto-Size All</button>
   </div>
+  <p>Please enter the amount and click withdraw</p>
   <ag-grid-angular
     #agGrid
     style="width: 100%; height: 500px;"
@@ -333,7 +339,7 @@
     [gridOptions]="gridOptions"
   >
   </ag-grid-angular>
-  <button (click)="getSelectedRows()">Process Withdrawals</button>
+  <button class="btn btn-primary" (click)="getSelectedRows()">Withdraw</button>
 
 </div>
 

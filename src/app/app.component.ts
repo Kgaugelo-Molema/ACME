@@ -16,7 +16,7 @@ export class AppComponent implements OnInit {
     { field: 'account_type', sortable: true, filter: true },
     { field: 'balance', sortable: true, filter: true },
     { field: 'amount', sortable: true, filter: true, editable: true },
-    { field: 'status', sortable: true, filter: true, editable: true }
+    { field: 'status', sortable: true, filter: true }
   ];
 
   rowData: any[];
@@ -48,12 +48,16 @@ export class AppComponent implements OnInit {
       }
       else {
         const balance = node.data.balance - amount;
-        if (node.data.account_type == 'savings' && balance <= 0)
+        if (node.data.account_type == 'savings' && balance <= 0) {
+          status = 'Declined';
           messages += `\nAccount Number ${node.data.account_number} is overdrawn!`
-        else if (node.data.account_type == 'cheque' && balance < 500)
+        }
+        else if (node.data.account_type == 'cheque' && balance < 500) {
+          status = 'Declined';
           messages += `\nAccount Number ${node.data.account_number} has reached the maximum over draft limit!`
+        }
         else 
-          status = 'Success';
+          status = 'Approved';
         node.setDataValue('status', status);  
         node.setDataValue('balance', balance.toFixed(2));  
       }       
