@@ -49,7 +49,7 @@ export class AppComponent implements OnInit {
       }
       else {
         const balance = node.data.balance - amount;
-        if (node.data.account_type == 'savings' && balance <= 0) {
+        if (node.data.account_type == 'savings' && balance < 0) {
           status = 'Declined';
           messages += `\nAccount Number ${node.data.account_number} is overdrawn!`
         }
@@ -57,10 +57,11 @@ export class AppComponent implements OnInit {
           status = 'Declined';
           messages += `\nAccount Number ${node.data.account_number} has reached the maximum over draft limit!`
         }
-        else 
+        else {
           status = 'Approved';
+          node.setDataValue('balance', balance.toFixed(2));  
+        }
         node.setDataValue('status', status);  
-        node.setDataValue('balance', balance.toFixed(2));  
       }       
     });
     if (messages != 'Message Log\n')
